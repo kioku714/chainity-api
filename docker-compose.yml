@@ -1,0 +1,25 @@
+version: "2"
+services:
+  api:
+    build: .
+    image: chanity-api
+    container_name: chanitiy-api
+    ports:
+    - "3000:3000"
+    depends_on:
+    - mongo
+    volumes:
+    - chanity-api-data:/data/profile
+    - .env_dev:/usr/src/app/.env
+  mongo:
+    image: mongo
+    container_name: chanitiy-mongodb
+    ports:
+    - "27017:27017"
+    volumes:
+    - chanity-mongodb-data:/data/db
+    - chanity-mongodb-config:/data/configdb
+volumes:
+  chanity-api-data:
+  chanity-mongodb-data:
+  chanity-mongodb-config:
