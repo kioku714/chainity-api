@@ -77,6 +77,9 @@ UserSchema.statics = {
       .exec()
       .then((user) => {
         if (user) {
+          user.avatar = config.apiDomain + "/api/images/" + user.avatar;
+          user.thumbnail = config.apiDomain + "/api/images/" + user.thumbnail;
+          
           return user;
         }
         const err = new APIError('등록되지 않은 회원입니다.', httpStatus.NOT_FOUND);
