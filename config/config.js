@@ -12,6 +12,8 @@ const envVarsSchema = Joi.object({
     .default(4040),
   DOMAIN: Joi.string()
     .default('localhost:8080'),
+  API_DOMAIN: Joi.string()
+    .default('http://localhost:3000'),
   MONGOOSE_DEBUG: Joi.boolean()
     .when('NODE_ENV', {
       is: Joi.string().equal('development'),
@@ -60,6 +62,7 @@ const config = {
   env: envVars.NODE_ENV,
   port: envVars.SERVER_PORT,
   domain: envVars.DOMAIN,
+  apiDomain: envVars.API_DOMAIN,
   mongooseDebug: envVars.MONGOOSE_DEBUG,
   jwtSecret: envVars.JWT_SECRET,
   mongo: {
