@@ -38,14 +38,14 @@ function sendInvitation(req, res, next) {
     'invitationFrom': invitationFrom, 
     'invitationLink': invitationLink,
     'groupName': 'JAVACAFE',
-    'contact': 'contact@chainity.co.kr'
+    'contact': config.smtp.userEmail
   }, function (err, data) {
     if (err) {
         console.error(err);
         next(err);
     } else {
       var mailOptions = {
-        from: config.smtp.userEmail, // sender address
+        from: 'notification@chainity.co.kr', // sender address
         to: req.receiver.email, // list of receivers
         subject: 'JAVACAFE 초대장', // Subject line
         html: data
