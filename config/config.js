@@ -69,6 +69,7 @@ const config = {
     port: envVars.MONGO_PORT
   },
   smtp: {
+    userEmail: envVars.SMTP_USER_EMAIL,
     user: envVars.SMTP_USER,
     pass: envVars.SMTP_PASSWORD
   },
