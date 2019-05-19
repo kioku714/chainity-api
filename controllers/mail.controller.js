@@ -38,7 +38,7 @@ function sendInvitation(req, res, next) {
     'invitationFrom': invitationFrom, 
     'invitationLink': invitationLink,
     'groupName': 'JAVACAFE',
-    'contact': config.smtp.userEmail
+    'contact': 'contact@chainity.co.kr'
   }, function (err, data) {
     if (err) {
         console.error(err);
