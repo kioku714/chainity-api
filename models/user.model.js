@@ -77,6 +77,11 @@ UserSchema.statics = {
       .exec()
       .then((user) => {
         if (user) {
+          if (user.avatar != undefined) {
+            user.avatar = config.imageHost + "/api/images/" + user.avatar;
+            user.thumbnail = config.imageHost + "/api/images/" + user.thumbnail;
+          }
+          
           return user;
         }
         const err = new APIError('등록되지 않은 회원입니다.', httpStatus.NOT_FOUND);
@@ -94,6 +99,11 @@ UserSchema.statics = {
       .then((user) => {
         if (user) {
           console.log("model getSystem: " + user);
+
+          if (user.avatar != undefined) {
+            user.avatar = config.imageHost + "/api/images/" + user.avatar;
+            user.thumbnail = config.imageHost + "/api/images/" + user.thumbnail;
+          }
           return user;
         }
         const err = new APIError('등록되지 않은 회원입니다.', httpStatus.NOT_FOUND);
@@ -111,6 +121,10 @@ UserSchema.statics = {
       .exec()
       .then((user) => {
         if (user) {
+          if (user.avatar != undefined) {
+            user.avatar = config.imageHost + "/api/images/" + user.avatar;
+            user.thumbnail = config.imageHost + "/api/images/" + user.thumbnail;
+          }
           return user;
         }
         const err = new APIError('등록되지 않은 회원입니다.', httpStatus.NOT_FOUND);
@@ -129,7 +143,21 @@ UserSchema.statics = {
       .sort({ createdAt: -1 })
       .skip(+offset)
       .limit(+limit)
-      .exec();
+      .exec()
+      .then((users) => {
+        if (users) {
+          users.forEach(user => {
+            if (user.avatar != undefined) {
+              user.avatar = config.imageHost + "/api/images/" + user.avatar;
+              user.thumbnail = config.imageHost + "/api/images/" + user.thumbnail;
+            }
+          });
+          return users;
+        }
+
+        const err = new APIError('등록된 회원이 없습니다.', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
   },
 
   findAll(userIds) {
@@ -140,6 +168,12 @@ UserSchema.statics = {
       .exec()
       .then((users) => {
         if(users) {
+          users.forEach(user => {
+            if (user.avatar != undefined) {
+              user.avatar = config.imageHost + "/api/images/" + user.avatar;
+              user.thumbnail = config.imageHost + "/api/images/" + user.thumbnail;
+            }
+          });
           return users;
         }
         const err = new APIError('등록되지 않은 회원입니다.', httpStatus.NOT_FOUND);

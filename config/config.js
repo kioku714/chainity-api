@@ -12,6 +12,8 @@ const envVarsSchema = Joi.object({
     .default(4040),
   DOMAIN: Joi.string()
     .default('localhost:8080'),
+  IMAGE_HOST: Joi.string()
+    .default('http://localhost:3000'),
   MONGOOSE_DEBUG: Joi.boolean()
     .when('NODE_ENV', {
       is: Joi.string().equal('development'),
@@ -62,6 +64,7 @@ const config = {
   env: envVars.NODE_ENV,
   port: envVars.SERVER_PORT,
   domain: envVars.DOMAIN,
+  imageHost: envVars.IMAGE_HOST,
   mongooseDebug: envVars.MONGOOSE_DEBUG,
   jwtSecret: envVars.JWT_SECRET,
   mongo: {
