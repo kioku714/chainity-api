@@ -28,7 +28,7 @@ function getTotalRewardTokens(req, res, next) {
 function getTotalSupply(req, res, next) {
   erc20.methods.totalSupply().call()
 	.then(function (balance) {
-    req.result.initialTokens = balance;
+    req.result.initialTokens = web3.utils.fromWei(web3.utils.toBN(balance));
     res.json(req.result);
 	});
 }
