@@ -8,8 +8,8 @@ var crypto = require('crypto');
 var ejs = require('ejs');
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.daum.net",
-  port: 465,
+  host: config.smtp.host,
+  port: config.smtp.port,
   secure: true,
   auth: {
     user: config.smtp.user,
@@ -31,29 +31,29 @@ const transporter = nodemailer.createTransport({
  * @returns {*}
  */
 function sendInvitation(req, res, next) {
-  var invitationFrom = req.user.name + '(' + req.user.email + ')';
-  var invitationLink = 'http://' + config.domain  + '/invitation/' + encode(req.receiver._id, req.receiver.email);
+  var invitationFrom = req.user.name;
+  var invitationLink = config.web.uri  + '/invitation/' + encode(req.receiver._id, req.receiver.email);
 
   ejs.renderFile(__dirname + "/../emails/invite.ejs", {
     'invitationFrom': invitationFrom, 
     'invitationLink': invitationLink,
-    'groupName': 'JAVACAFE',
-    'contact': config.smtp.userEmail
+    'groupName': '자바카페',  // TODO
+    'contact': config.email.contact
   }, function (err, data) {
     if (err) {
         console.error(err);
         next(err);
     } else {
       var mailOptions = {
-        from: 'notification@chainity.co.kr', // sender address
+        from: invitationFrom + ' ' + '<' + config.email.notification + '>', // sender address
         to: req.receiver.email, // list of receivers
-        subject: 'JAVACAFE 초대장', // Subject line
+        subject: '자바카페 커뮤니티 초대장', // Subject line // TODO
         html: data
       };
       
       transporter.sendMail(mailOptions, function (err, info) {
-        // console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
-        // console.log('Message sent successfully as %s', info.messageId);
+        console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
+        console.log('Message sent successfully as %s', info.messageId);
         
         if(err)
           next(err);
@@ -66,7 +66,8 @@ function sendInvitation(req, res, next) {
 }
 
 /**
- * Send approved
+ * @deprecated
+ * Send approved 
  * @param {string} req.body.email - email of user to be approved.
  * @param {string} req.body.name - name of user to be approved.
  * @param res
@@ -78,22 +79,22 @@ function sendApprovalComplete(req, res, next) {
     email : req.body.email,
     name : req.body.name
   }
-  var loginLink = 'http://' + config.domain  + '/login';
+  var loginLink = config.web.uri  + '/login';
 
   ejs.renderFile(__dirname + "/../emails/welcome.ejs", {
     'email': receiver.email, 
     'name': receiver.name,
     'loginLink': loginLink,
-    'groupName': 'JAVACAFE',
-    'contact': config.smtp.user
+    'groupName': '자바카페',  //  TODO
+    'contact': config.email.contact
   }, function (err, data) {
     if (err) {
       console.error(err);
     } else {
       var mailOptions = {
-        from: 'no-reply@community.com', // sender address
+        from: invitationFrom + ' ' + '<' + config.email.notification + '>', // sender address
         to: receiver.email, // list of receivers
-        subject: 'JAVACAFE 회원 가입 승인 안내', // Subject line
+        subject: '자바카페 회원 가입 승인 안내', // Subject line  // TODO
         html: data
       };
       
