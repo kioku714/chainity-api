@@ -78,8 +78,8 @@ UserSchema.statics = {
       .then((user) => {
         if (user) {
           if (user.avatar != undefined) {
-            user.avatar = config.imageHost + "/api/images/" + user.avatar;
-            user.thumbnail = config.imageHost + "/api/images/" + user.thumbnail;
+            user.avatar = config.imageHost + "/v1/images/" + user.avatar;
+            user.thumbnail = config.imageHost + "/v1/images/" + user.thumbnail;
           }
           
           return user;
@@ -101,8 +101,8 @@ UserSchema.statics = {
           console.log("model getSystem: " + user);
 
           if (user.avatar != undefined) {
-            user.avatar = config.imageHost + "/api/images/" + user.avatar;
-            user.thumbnail = config.imageHost + "/api/images/" + user.thumbnail;
+            user.avatar = config.imageHost + "/v1/images/" + user.avatar;
+            user.thumbnail = config.imageHost + "/v1/images/" + user.thumbnail;
           }
           return user;
         }
@@ -122,8 +122,8 @@ UserSchema.statics = {
       .then((user) => {
         if (user) {
           if (user.avatar != undefined) {
-            user.avatar = config.imageHost + "/api/images/" + user.avatar;
-            user.thumbnail = config.imageHost + "/api/images/" + user.thumbnail;
+            user.avatar = config.imageHost + "/v1/images/" + user.avatar;
+            user.thumbnail = config.imageHost + "/v1/images/" + user.thumbnail;
           }
           return user;
         }
@@ -148,8 +148,8 @@ UserSchema.statics = {
         if (users) {
           users.forEach(user => {
             if (user.avatar != undefined) {
-              user.avatar = config.imageHost + "/api/images/" + user.avatar;
-              user.thumbnail = config.imageHost + "/api/images/" + user.thumbnail;
+              user.avatar = config.imageHost + "/v1/images/" + user.avatar;
+              user.thumbnail = config.imageHost + "/v1/images/" + user.thumbnail;
             }
           });
           return users;
@@ -170,8 +170,8 @@ UserSchema.statics = {
         if(users) {
           users.forEach(user => {
             if (user.avatar != undefined) {
-              user.avatar = config.imageHost + "/api/images/" + user.avatar;
-              user.thumbnail = config.imageHost + "/api/images/" + user.thumbnail;
+              user.avatar = config.imageHost + "/v1/images/" + user.avatar;
+              user.thumbnail = config.imageHost + "/v1/images/" + user.thumbnail;
             }
           });
           return users;
