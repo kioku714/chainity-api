@@ -137,7 +137,7 @@ function remove(req, res, next) {
 }
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, config.imageUploadPath);
+    cb(null, config.image.uploadPath);
   },
   filename: (req, file, cb) => {
     const fileName = req.user._id+'_'+Date.now()+'_profile.jpg';
@@ -150,8 +150,8 @@ const upload = multer({
 }).single('file');
 
 function uploadImage(req, res, next) {
-  if(!fs.existsSync(config.imageUploadPath)){
-      fs.mkdirSync(config.imageUploadPath);
+  if(!fs.existsSync(config.image.uploadPath)){
+      fs.mkdirSync(config.image.uploadPath);
   }
 
   upload(req, res, err => {
@@ -160,7 +160,7 @@ function uploadImage(req, res, next) {
     } else {
       thumb({
         source: req.file.path,
-        destination: config.imageUploadPath,
+        destination: config.image.uploadPath,
         // digest: true,
         basename: req.user._id+'_'+Date.now(),
         // suffix: '_thumb',
@@ -168,8 +168,8 @@ function uploadImage(req, res, next) {
         skip: true
       }).then(function(files) {
         const user = new User(req.user);
-        user.avatar = req.file.path.replace(config.imageUploadPath,'');
-        user.thumbnail = files[0].dstPath.replace(config.imageUploadPath, '');
+        user.avatar = req.file.path.replace(config.image.uploadPath,'');
+        user.thumbnail = files[0].dstPath.replace(config.image.uploadPath, '');
         User.update({_id: user.id}, user)
           .then(() => res.json({ user }))
           .catch(e => next(e));

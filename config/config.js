@@ -10,10 +10,6 @@ const envVarsSchema = Joi.object({
     .default('development'),
   SERVER_PORT: Joi.number()
     .default(4040),
-  DOMAIN: Joi.string()
-    .default('localhost:8080'),
-  IMAGE_HOST: Joi.string()
-    .default('http://localhost:3000'),
   MONGOOSE_DEBUG: Joi.boolean()
     .when('NODE_ENV', {
       is: Joi.string().equal('development'),
@@ -22,12 +18,18 @@ const envVarsSchema = Joi.object({
     }),
   JWT_SECRET: Joi.string().required()
     .description('JWT Secret required to sign'),
-  SMTP_USER_EMAIL: Joi.string().email().required()
-    .description('SMTP user email required to send mail'),
+  SMTP_HOST: Joi.string().required()
+    .description('SMTP host required to send mail'),
+  SMTP_PORT: Joi.number()
+    .default(465),
   SMTP_USER: Joi.string().required()
     .description('SMTP user required to send mail'),
   SMTP_PASSWORD: Joi.required()
     .description('SMTP password required to send mail'),
+  EMAIL_NOTIFICATION: Joi.string()
+    .default('notification@chainity.co.kr'),
+  EMAIL_CONTACT: Joi.string()
+    .default('contact@chainity.co.kr'),
   WEB3_PROVIDER: Joi.required()
     .description('Web3 provier required to connect etherem network'),
   CONTRACT_ACCOUNT: Joi.required()
@@ -35,7 +37,7 @@ const envVarsSchema = Joi.object({
   CONTRACT_ABI: Joi.required()
     .description('Contract ABI required for smart contract'),
   MONGO_HOST: Joi.string().required()
-    .description('Mongo DB host url'),
+    .description('Mongo DB host required'),
   MONGO_PORT: Joi.number()
     .default(27017),
   ROOT_ID: Joi.string()
@@ -45,13 +47,15 @@ const envVarsSchema = Joi.object({
   ROOT_ROLE: Joi.string()
   .default('system'),
   GAS_PRICE: Joi.number()
-  .default(1),
+  .default(1000000000), // 0.000000001 Ether (1 Gwei)
   GAS_LIMIT: Joi.number()
   .default(100000),
   IMAGE_UPLOAD_PATH: Joi.string()
   .default('upload/profile/'),
-  IMAGE_THUMBNAIL_UPLOAD_PATH: Joi.string()
-  .default('upload/profile_thumbnail/'),
+  IMAGE_URI: Joi.required()
+    .description('Image uri required for thumbnail and avatar'),
+  WEB_URI: Joi.required()
+    .description('Web uri required to access web from email'),
 }).unknown()
   .required();
 
@@ -63,8 +67,6 @@ if (error) {
 const config = {
   env: envVars.NODE_ENV,
   port: envVars.SERVER_PORT,
-  domain: envVars.DOMAIN,
-  imageHost: envVars.IMAGE_HOST,
   mongooseDebug: envVars.MONGOOSE_DEBUG,
   jwtSecret: envVars.JWT_SECRET,
   mongo: {
@@ -72,15 +74,26 @@ const config = {
     port: envVars.MONGO_PORT
   },
   smtp: {
-    userEmail: envVars.SMTP_USER_EMAIL,
+    host: envVars.SMTP_HOST,
+    port: envVars.SMTP_PORT,
     user: envVars.SMTP_USER,
     pass: envVars.SMTP_PASSWORD
   },
-  web3Provider: envVars.WEB3_PROVIDER,
-  contractABI: envVars.CONTRACT_ABI,
-  contractAccount: envVars.CONTRACT_ACCOUNT,
-  gasPrice: envVars.GAS_PRICE,
-  gasLimit: envVars.GAS_LIMIT,
+  email: {
+    notification : envVars.EMAIL_NOTIFICATION,
+    contact: envVars.EMAIL_CONTACT,
+  },
+  web3: {
+    provier: envVars.WEB3_PROVIDER
+  },
+  contract: {
+    abi: envVars.CONTRACT_ABI,
+    account: envVars.CONTRACT_ACCOUNT
+  },
+  gas: {
+    price: envVars.GAS_PRICE,
+    limit: envVars.GAS_LIMIT
+  },
   root: {
     id: envVars.ROOT_ID,
     password: envVars.ROOT_PASSWORD,
@@ -93,8 +106,13 @@ const config = {
       account: envVars.BANK_NH_FIN_ACCOUNT
     }
   },
-  systemAddress: envVars.SYSTEM_ADDRESS,
-  imageUploadPath: envVars.IMAGE_UPLOAD_PATH
+  image: {
+    uploadPath: envVars.IMAGE_UPLOAD_PATH,
+    uri: envVars.IMAGE_URI
+  },
+  web: {
+    uri: envVars.WEB_URI
+  }
 };
 
 module.exports = config;
