@@ -5,6 +5,7 @@ var APIError = require('../helpers/APIError');
 var config = require('../config/config');
 var ObjectID = require('mongodb').ObjectID
 
+const imageUrl = config.imageHost + "/v1/images/";
 /**
  * User Schema
  */
@@ -63,6 +64,27 @@ const UserSchema = new mongoose.Schema({
 UserSchema.method({
 });
 
+UserSchema.post('find', function(users) {
+  users.forEach(user => {
+    userAvatarPath(user);
+  });
+});
+
+UserSchema.post('findOne', function(user) {
+  userAvatarPath(user);
+});
+
+UserSchema.post('findById', function(user) {
+  userAvatarPath(user);
+});
+
+function userAvatarPath(user) {
+  if (user.avatar != undefined) {
+    user.avatar = imageUrl + user.avatar;
+    user.thumbnail = imageUrl + user.thumbnail;
+  }
+}
+
 /**
  * Statics
  */
@@ -77,11 +99,6 @@ UserSchema.statics = {
       .exec()
       .then((user) => {
         if (user) {
-          if (user.avatar != undefined) {
-            user.avatar = config.imageHost + "/v1/images/" + user.avatar;
-            user.thumbnail = config.imageHost + "/v1/images/" + user.thumbnail;
-          }
-          
           return user;
         }
         const err = new APIError('등록되지 않은 회원입니다.', httpStatus.NOT_FOUND);
@@ -100,10 +117,6 @@ UserSchema.statics = {
         if (user) {
           console.log("model getSystem: " + user);
 
-          if (user.avatar != undefined) {
-            user.avatar = config.imageHost + "/v1/images/" + user.avatar;
-            user.thumbnail = config.imageHost + "/v1/images/" + user.thumbnail;
-          }
           return user;
         }
         const err = new APIError('등록되지 않은 회원입니다.', httpStatus.NOT_FOUND);
@@ -121,10 +134,6 @@ UserSchema.statics = {
       .exec()
       .then((user) => {
         if (user) {
-          if (user.avatar != undefined) {
-            user.avatar = config.imageHost + "/v1/images/" + user.avatar;
-            user.thumbnail = config.imageHost + "/v1/images/" + user.thumbnail;
-          }
           return user;
         }
         const err = new APIError('등록되지 않은 회원입니다.', httpStatus.NOT_FOUND);
@@ -146,12 +155,6 @@ UserSchema.statics = {
       .exec()
       .then((users) => {
         if (users) {
-          users.forEach(user => {
-            if (user.avatar != undefined) {
-              user.avatar = config.imageHost + "/v1/images/" + user.avatar;
-              user.thumbnail = config.imageHost + "/v1/images/" + user.thumbnail;
-            }
-          });
           return users;
         }
 
@@ -168,12 +171,6 @@ UserSchema.statics = {
       .exec()
       .then((users) => {
         if(users) {
-          users.forEach(user => {
-            if (user.avatar != undefined) {
-              user.avatar = config.imageHost + "/v1/images/" + user.avatar;
-              user.thumbnail = config.imageHost + "/v1/images/" + user.thumbnail;
-            }
-          });
           return users;
         }
         const err = new APIError('등록되지 않은 회원입니다.', httpStatus.NOT_FOUND);
