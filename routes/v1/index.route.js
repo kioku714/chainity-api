@@ -1,7 +1,7 @@
 var express = require('express');
 
 var groupRoutes = require('./group.route');
-var imageRoutes = require('./image.route')
+var imageRoutes = require('./image.route');
 
 const router = express.Router();
 
