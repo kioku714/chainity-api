@@ -37,7 +37,7 @@ function sendInvitation(req, res, next) {
   ejs.renderFile(__dirname + "/../emails/invite.ejs", {
     'invitationFrom': invitationFrom, 
     'invitationLink': invitationLink,
-    'groupName': '자바카페',  // TODO
+    'groupName': req.groupName,
     'contact': config.email.contact
   }, function (err, data) {
     if (err) {
@@ -45,12 +45,12 @@ function sendInvitation(req, res, next) {
         next(err);
     } else {
       var mailOptions = {
-        from: invitationFrom + ' ' + '<' + config.email.notification + '>', // sender address
+        // from: invitationFrom + ' ' + '<' + config.email.notification + '>', // sender address
+        from: invitationFrom + ' ' + '<' + config.email.contact + '>', // sender address
         to: req.receiver.email, // list of receivers
-        subject: '자바카페 커뮤니티 초대장', // Subject line // TODO
+        subject: req.groupName + ' 커뮤니티 초대장', // Subject line
         html: data
       };
-      
       transporter.sendMail(mailOptions, function (err, info) {
         console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
         console.log('Message sent successfully as %s', info.messageId);
@@ -85,7 +85,7 @@ function sendApprovalComplete(req, res, next) {
     'email': receiver.email, 
     'name': receiver.name,
     'loginLink': loginLink,
-    'groupName': '자바카페',  //  TODO
+    'groupName': req.groupName,
     'contact': config.email.contact
   }, function (err, data) {
     if (err) {
@@ -94,7 +94,7 @@ function sendApprovalComplete(req, res, next) {
       var mailOptions = {
         from: invitationFrom + ' ' + '<' + config.email.notification + '>', // sender address
         to: receiver.email, // list of receivers
-        subject: '자바카페 회원 가입 승인 안내', // Subject line  // TODO
+        subject: req.groupName + ' 회원 가입 승인 안내', // Subject line
         html: data
       };
       
