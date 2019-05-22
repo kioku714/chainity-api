@@ -5,8 +5,8 @@ var Nonce = require('../helpers/Nonce');
 var Web3 = require('web3');
 var Tx = require('ethereumjs-tx');
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
-const erc20 = new web3.eth.Contract(JSON.parse(config.contractABI), config.contractAccount);
+const web3 = new Web3(new Web3.providers.HttpProvider(config.web3.provier));
+const erc20 = new web3.eth.Contract(JSON.parse(config.contract.abi), config.contract.account);
 
 /**
  * Get rewards list.
@@ -66,7 +66,7 @@ function create(req, res, next) {
       return savedReward;
     })
     .then(async savedReward => {
-      const from = config.systemAddress;
+      const from = '0x' + JSON.parse(config.root.keyStore).address;
       const rewardedUser = await User.get(savedReward.rewardedUser);
       const to = rewardedUser.keyStore.address;
       const tokens = savedReward.tokens;
@@ -78,8 +78,8 @@ function create(req, res, next) {
       const nonce = await web3.eth.getTransactionCount(sender);
       var rawTx = {
         nonce : web3.utils.toHex(Nonce.getFreshNonce(sender, nonce)),
-        gasPrice: web3.utils.toHex(config.gasPrice),
-        gasLimit: web3.utils.toHex(config.gasLimit),
+        gasPrice: web3.utils.toHex(config.gas.price),
+        gasLimit: web3.utils.toHex(config.gas.limit),
         to: web3.utils.toHex(to),
         value: web3.utils.toHex(0),
         data: data

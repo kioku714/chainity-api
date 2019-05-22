@@ -5,7 +5,7 @@ var APIError = require('../helpers/APIError');
 var config = require('../config/config');
 var ObjectID = require('mongodb').ObjectID
 
-const imageUrl = config.imageHost + "/v1/images/";
+const imageUrl = config.image.uri + "/v1/images/";
 /**
  * User Schema
  */

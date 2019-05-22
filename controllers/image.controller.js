@@ -2,7 +2,7 @@ var fs= require('fs');
 var config = require('../config/config');
 
 function load(req, res, next, relPath) {
-    req.absPath = config.imageUploadPath + relPath;
+    req.absPath = config.image.uploadPath + relPath;
     return next();
 }
 
