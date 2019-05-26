@@ -2,17 +2,17 @@ var fs= require('fs');
 var config = require('../config/config');
 
 function load(req, res, next, relPath) {
-    req.absPath = config.imageUploadPath + relPath;
+    req.absPath = config.image.uploadPath + relPath;
     return next();
 }
 
 function get(req, res) {
     fs.readFile(req.absPath, function(error,data){
         if (error) {
-            res.writeHead(404, {"Content": "image/jpeg"})
+            res.writeHead(404)
             res.end()
         } else {
-            res.writeHead(200, {"Content": "image/jpeg"})
+            res.writeHead(200, {"Content-Type": "image/jpeg"})
             res.end(data)
         }
     })

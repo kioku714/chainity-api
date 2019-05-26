@@ -5,6 +5,7 @@ var APIError = require('../helpers/APIError');
 var config = require('../config/config');
 var ObjectID = require('mongodb').ObjectID
 
+const imageUrl = config.image.uri + "/v1/images/";
 /**
  * User Schema
  */
@@ -63,6 +64,27 @@ const UserSchema = new mongoose.Schema({
 UserSchema.method({
 });
 
+UserSchema.post('find', function(users) {
+  users.forEach(user => {
+    userAvatarPath(user);
+  });
+});
+
+UserSchema.post('findOne', function(user) {
+  userAvatarPath(user);
+});
+
+UserSchema.post('findById', function(user) {
+  userAvatarPath(user);
+});
+
+function userAvatarPath(user) {
+  if (user.avatar != undefined) {
+    user.avatar = imageUrl + user.avatar;
+    user.thumbnail = imageUrl + user.thumbnail;
+  }
+}
+
 /**
  * Statics
  */
@@ -73,7 +95,7 @@ UserSchema.statics = {
    * @returns {Promise<User, APIError>}
    */
   get(id) {
-    return this.findById(id)
+    return this.findById(id, {"keyStore.crypto": 0})
       .exec()
       .then((user) => {
         if (user) {
@@ -94,6 +116,7 @@ UserSchema.statics = {
       .then((user) => {
         if (user) {
           console.log("model getSystem: " + user);
+
           return user;
         }
         const err = new APIError('등록되지 않은 회원입니다.', httpStatus.NOT_FOUND);
@@ -129,7 +152,15 @@ UserSchema.statics = {
       .sort({ createdAt: -1 })
       .skip(+offset)
       .limit(+limit)
-      .exec();
+      .exec()
+      .then((users) => {
+        if (users) {
+          return users;
+        }
+
+        const err = new APIError('등록된 회원이 없습니다.', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
   },
 
   findAll(userIds) {

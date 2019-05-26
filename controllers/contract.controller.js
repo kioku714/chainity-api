@@ -5,8 +5,8 @@ var Tx = require('ethereumjs-tx');
 var APIError = require('../helpers/APIError');
 var httpStatus = require('http-status');
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
-const erc20 = new web3.eth.Contract(JSON.parse(config.contractABI), config.contractAccount);
+const web3 = new Web3(new Web3.providers.HttpProvider(config.web3.provier));
+const erc20 = new web3.eth.Contract(JSON.parse(config.contract.abi), config.contract.account);
 
 var nonces = {};
 
@@ -71,7 +71,7 @@ async function getReceiptList(req, res) {
 
 function load(req, res, next, id) {
 	// TODO - for platform
-  	// var erc20 = new web3.eth.Contract(JSON.parse(config.contractABI), id);
+  	// var erc20 = new web3.eth.Contract(JSON.parse(config.contract.abi), id);
 	req.contract = erc20;
     return next();
 }
@@ -89,8 +89,8 @@ async function _sendTx(walletInfo, to, data, value) {
 
 	var rawTx = {
 		nonce : web3.utils.toHex(getUpdatedNonce(myAddress, nonce)),
-		gasPrice: web3.utils.toHex(config.gasPrice),
-		gasLimit: web3.utils.toHex(config.gasLimit),
+		gasPrice: web3.utils.toHex(config.gas.price),
+		gasLimit: web3.utils.toHex(config.gas.limit),
 		to: web3.utils.toHex(to),
 		value: web3.utils.toHex(value),
 		data: data
@@ -113,7 +113,7 @@ async function _sendTx(walletInfo, to, data, value) {
 
 function sendTokens(req, res, next) {
 	const contract = req.contract;
-	const from = config.systemAddress;
+	const from = '0x' + JSON.parse(config.root.keyStore).address;
 	const to = req.body.receiver;
 	const tokens = web3.utils.toWei(req.body.tokens.toString(), 'ether');
 	const password = req.body.password;
@@ -123,7 +123,7 @@ function sendTokens(req, res, next) {
 		var walletInfo = web3.eth.accounts.decrypt(user.keyStore, password);
 		var data = contract.methods.transferFrom(from, to, tokens).encodeABI();
 		try{
-			res.send(await _sendTx(walletInfo, config.contractAccount, data, 0));
+			res.send(await _sendTx(walletInfo, config.contract.account, data, 0));
 		} catch (e) {
 			throw e;
 		}
@@ -144,7 +144,7 @@ function transfer(req, res, next) {
 		var walletInfo = web3.eth.accounts.decrypt(user.keyStore, password);
 		var data = contract.methods.transfer(to, tokens).encodeABI();
 		try{
-			res.send(await _sendTx(walletInfo, config.contractAccount, data, 0));
+			res.send(await _sendTx(walletInfo, config.contract.account, data, 0));
 		} catch (e) {
 			throw e;
 		}
@@ -165,7 +165,7 @@ function approval(req, res, next) {
 		var walletInfo = web3.eth.accounts.decrypt(user.keyStore, password);
 		var data = contract.methods.approve(spender, tokens).encodeABI();
 		try{
-			res.send(await _sendTx(walletInfo, config.contractAccount, data, 0));
+			res.send(await _sendTx(walletInfo, config.contract.account, data, 0));
 		} catch (e) {
 			throw e;
 		}
@@ -203,7 +203,7 @@ function sendCoins(req, res, next) {
 async function getUserTokensAllowance(req, res, next) {
 	const contract = req.contract;
 	const me = await User.get(req.decoded._id);
-	// const tokenOwner = config.systemAddress;
+	// const tokenOwner = '0x' + JSON.parse(config.root.keyStore).address;
 	const tokenOwner = me.keyStore.address;
 	const spender = req.user.keyStore.address;
 	

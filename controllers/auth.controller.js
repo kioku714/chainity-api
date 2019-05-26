@@ -5,7 +5,7 @@ var User = require('../models/user.model');
 var config = require('../config/config');
 var Web3 = require('web3');
 
-var web3 = new Web3(config.web3Provider);
+var web3 = new Web3(config.web3.provier);
 
 /**
  * Returns jwt token if valid email and password is provided
