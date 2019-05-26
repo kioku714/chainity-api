@@ -95,7 +95,7 @@ UserSchema.statics = {
    * @returns {Promise<User, APIError>}
    */
   get(id) {
-    return this.findById(id)
+    return this.findById(id, {"keyStore.crypto": 0})
       .exec()
       .then((user) => {
         if (user) {
