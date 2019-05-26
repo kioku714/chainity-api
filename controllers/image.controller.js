@@ -9,10 +9,10 @@ function load(req, res, next, relPath) {
 function get(req, res) {
     fs.readFile(req.absPath, function(error,data){
         if (error) {
-            res.writeHead(404, {"Content": "image/jpeg"})
+            res.writeHead(404)
             res.end()
         } else {
-            res.writeHead(200, {"Content": "image/jpeg"})
+            res.writeHead(200, {"Content-Type": "image/jpeg"})
             res.end(data)
         }
     })
