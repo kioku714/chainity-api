@@ -34,8 +34,8 @@ module.exports = {
   },
   // POST /api/mails/invitation/users/:userId
   sendInvitation: {
-    params: {
-      userId: Joi.string().required()
+    body: {
+      invitee: Joi.string().hex().required()
     }
   }
 };
