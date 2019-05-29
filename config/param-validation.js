@@ -1,7 +1,6 @@
 var Joi = require('joi');
 
 module.exports = {
-  // POST /api/users
   createUser: {
     body: {
       email: Joi.string().email().required(),
@@ -9,7 +8,6 @@ module.exports = {
       role: Joi.string().required()
     }
   },
-  // UPDATE /api/users/:userId
   updateUser: {
     body: {
     },
@@ -17,22 +15,19 @@ module.exports = {
       userId: Joi.string().hex().required()
     }
   },
-  // POST /api/auth/login
   login: {
     body: {
       email: Joi.string().required(),
       password: Joi.string().required()
     }
   },
-  // POST /api/auth/register
   register: {
     body: {
-      email: Joi.string().required(),
-      password: Joi.string().required(),
-      repeatPassword: Joi.string().required()
+      invitee: Joi.string().hex().required(),
+      name: Joi.string().required(),
+      password: Joi.string().required()
     }
   },
-  // POST /api/mails/invitation/users/:userId
   sendInvitation: {
     body: {
       invitee: Joi.string().hex().required()
