@@ -6,6 +6,7 @@ var config = require('../config/config');
 var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var ejs = require('ejs');
+var debug = require('debug')('api:mail');
 
 const transporter = nodemailer.createTransport({
   host: config.smtp.host,
@@ -45,19 +46,18 @@ function sendInvitation(req, res, next) {
         next(err);
     } else {
       var mailOptions = {
-        // from: invitationFrom + ' ' + '<' + config.email.notification + '>', // sender address
-        from: invitationFrom + ' ' + '<' + config.email.contact + '>', // sender address
+        from: invitationFrom + ' ' + '<' + config.email.notification + '>', // sender address
+        // from: invitationFrom + ' ' + '<' + config.email.contact + '>', // sender address
         to: req.receiver.email, // list of receivers
         subject: req.groupName + ' 커뮤니티 초대장', // Subject line
         html: data
       };
       transporter.sendMail(mailOptions, function (err, info) {
-        console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
-        console.log('Message sent successfully as %s', info.messageId);
-        
         if(err)
           next(err);
         else
+          debug('Message sent successfully as %s to %s', info.messageId, info.accepted)
+          debug('Preview URL: ' + nodemailer.getTestMessageUrl(info));
           res.json(info);
       });
     }  
