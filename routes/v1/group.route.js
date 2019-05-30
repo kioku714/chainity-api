@@ -4,6 +4,7 @@ var express = require('express'),
     validate = require('express-validation');
     
 var loginRoutes = require('./login.route'),
+    registerRoutes = require('./register.route'),
     userRoutes = require('./user.route'),
     eventRoutes = require('./event.route'),
     aggRoutes = require('./agg.route'),
@@ -22,6 +23,8 @@ router.route('/:groupId')
   .get(groupCtrl.getTotalRewardTokens, groupCtrl.getTotalSupply);
 
 router.use('/:groupId/login', loginRoutes);
+
+router.use('/:groupId/register', registerRoutes);
 
 router.use('/:groupId/participations', auth, participationRoutes)
 
