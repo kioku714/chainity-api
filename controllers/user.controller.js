@@ -7,8 +7,8 @@ var config = require('../config/config');
 var thumb = require('node-thumbnail').thumb;
 var Web3 = require('web3');
 
-var web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
-var erc20 = new web3.eth.Contract(JSON.parse(config.contractABI), config.contractAccount);
+var web3 = new Web3(new Web3.providers.HttpProvider(config.web3.provier));
+var erc20 = new web3.eth.Contract(JSON.parse(config.contract.abi), config.contract.account);
 
 /* Create root user */
 User.list()
