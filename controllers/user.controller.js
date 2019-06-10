@@ -5,6 +5,10 @@ var APIError = require('../helpers/APIError');
 var User = require('../models/user.model');
 var config = require('../config/config');
 var thumb = require('node-thumbnail').thumb;
+var Web3 = require('web3');
+
+var web3 = new Web3(new Web3.providers.HttpProvider(config.web3.provier));
+var erc20 = new web3.eth.Contract(JSON.parse(config.contract.abi), config.contract.account);
 
 /* Create root user */
 User.list()
@@ -61,7 +65,30 @@ function load(req, res, next, id) {
  * @returns {User}
  */
 function get(req, res) {
-  return res.json(req.user);
+  const user = {
+    _id: req.user._id,
+    email: req.user.email,
+    name: req.user.name,
+    status: req.user.status,
+    role: req.user.role,
+    createdAt: req.user.createdAt,
+    registeredAt: req.user.registeredAt,
+    avatar: req.user.avatar,
+    thumbnail: req.user.thumbnail,
+    keyStore: req.user.keyStore,
+    tokens: 0
+  };
+  if (req.user.keyStore) {
+    const tokenOwner = req.user.keyStore.address;
+    erc20.methods.balanceOf(tokenOwner).call()
+    .then(function (balance) {
+      user.tokens = web3.utils.fromWei(web3.utils.toBN(balance));
+      return res.json(user);
+    })
+    .catch(e => console.error);
+  } else {
+    return res.json(user);
+  }
 }
 
 /**

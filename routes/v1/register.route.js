@@ -8,6 +8,6 @@ var paramValidation = require('../../config/param-validation'),
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
-  .post(validate(paramValidation.login), authCtrl.login);
+  .post(validate(paramValidation.register), authCtrl.register, userCtrl.update);
 
 module.exports = router;
