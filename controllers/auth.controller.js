@@ -92,4 +92,28 @@ function getRandomNumber(req, res) {
   });
 }
 
-module.exports = { login, loadUserToRegister, getRandomNumber };
+/**
+ * Prepare a user for registration and append to req.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function register(req, res, next) {
+  var account = web3.eth.accounts.create();
+  var encryption = web3.eth.accounts.encrypt(account.privateKey, req.body.password);
+  const userId = req.body.invitee;
+
+  User.get(userId)
+    .then((user) => {
+      user.name = req.body.name;
+      user.status = 'active';
+      user.registeredAt = Date.now();
+      user.keyStore = encryption;
+      req.user = user; // eslint-disable-line no-param-reassign
+      return next();
+    })
+    .catch(e => next(e));
+}
+
+module.exports = { login, loadUserToRegister, getRandomNumber, register };
