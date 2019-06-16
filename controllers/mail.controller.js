@@ -33,7 +33,7 @@ const transporter = nodemailer.createTransport({
  */
 function sendInvitation(req, res, next) {
   var invitationFrom = req.user.name;
-  var invitationLink = config.web.uri  + '/#/invitation/' + encode(req.receiver._id, req.receiver.email);
+  var invitationLink = config.web.uri  + '/#/invitation?token=' + encode(req.receiver._id, req.receiver.email);
 
   ejs.renderFile(__dirname + "/../emails/invite.ejs", {
     'invitationFrom': invitationFrom, 
